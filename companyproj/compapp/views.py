@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Employee, Project
 from django.utils import timezone
 
@@ -21,3 +21,50 @@ def employee_detail(request, employee_id):
 def employee_engineers(request):
     employees = Employee.objects.filter(position__icontains="engineer")
     return render(request, 'employee_list.html', {'employees': employees})
+
+
+
+#forms
+
+#from .forms import PostForm #2
+
+#def create_post(request):
+  #form = PostForm(request.POST or None) #3
+
+  #data = {}
+  #data["form"] = form #4
+
+  #if form.is_valid(): #5
+    post = form.save() #6
+    return redirect("show-post", s=post.slug) #7
+
+  #return render(request, 'create_post.html', data) #8
+
+
+from .forms import EmployeeForm, ProjectForm
+
+def create_employee(request):
+    form = EmployeeForm(request.POST or None)
+
+    data = {"form": form}
+
+    if form.is_valid():
+        form.save()
+        return redirect("employee_list")   # ← your list page
+
+    return render(request, "add_employee.html", data)
+
+
+def create_project(request):
+    form = ProjectForm(request.POST or None)
+
+    data = {"form": form}
+
+    if form.is_valid():
+        form.save()
+        return redirect("employee_list")   # redirect to employee list page
+
+    return render(request, "project.html", data)
+
+
+
